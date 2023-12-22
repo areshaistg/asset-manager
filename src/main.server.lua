@@ -1,4 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
 local Root = script.Parent
 local Packages = Root.Packages
 local React = require(Packages.React)
@@ -27,6 +29,37 @@ local function App(props)
     end
 
     local subDirectoryPath, setSubDirectoryPath = React.useState({})
+    local sound, setSound = React.useState()
+    local soundClone, setSoundClone = React.useState()
+    local soundTime, setSoundTime = React.useState(0)
+
+    React.useEffect(function()
+        task.spawn(function()
+            while soundClone do
+                task.wait()
+                if not soundClone then break end
+                setSoundTime(if soundClone then soundClone.TimePosition / soundClone.TimeLength else 0)
+            end
+        end)
+    end, {soundClone})
+
+    React.useEffect(function()
+        if sound then
+            if soundClone then
+                soundClone:Destroy()
+            end
+            local clone = sound:Clone()
+            clone.Parent = mainWidget
+            clone:Play()
+            setSoundClone(clone)
+        else
+            if soundClone then
+                soundClone:Stop()
+                soundClone:Destroy()
+                setSoundClone(nil)
+            end
+        end
+    end, {sound})
 
     local function getSubDirectoryFromPath()
         local dir = props.Assets
@@ -44,16 +77,36 @@ local function App(props)
     }, {
         Explorer = React.createElement(Explorer, {
             Elements = getSubDirectoryFromPath(),
+            Path = subDirectoryPath,
+
             AppendPath = function(dir)
                 local new = table.clone(subDirectoryPath)
                 table.insert(new, dir)
                 setSubDirectoryPath(new)
             end,
             GoUpPath = function()
-                if #subDirectory > 0 then
-                    table.remove(subDirectory, #subDirectory)
+                if #subDirectoryPath > 0 then
+                    local new = table.clone(subDirectoryPath)
+                    table.remove(new, #new)
+                    setSubDirectoryPath(new)
                 end
             end,
+
+            -- Sound Player
+            SoundTime = soundTime,
+            SoundPreview = soundClone,
+            MoveSound = function(frac)
+                if soundClone then
+                    soundClone.TimePosition = soundClone.TimeLength * frac
+                end
+            end,
+            ToggleSound = function(newSound)
+                if sound == newSound then
+                    setSound(nil)
+                else
+                    setSound(newSound)
+                end
+            end
         })
     })
 end
