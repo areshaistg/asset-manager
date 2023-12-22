@@ -1,0 +1,10 @@
+[package]
+name = "gaby3/asset-manager"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+React = "jsdotlua/react@17.0.3"
+ReactRoblox = "jsdotlua/react-roblox@17.0.3"
+Option = "sleitnick/option@1.0.5"

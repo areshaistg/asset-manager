@@ -1,0 +1,14 @@
+{
+    "name": "asset-manager",
+    "tree": {
+        "$className": "DataModel",
+        "ServerScriptService": {
+            "AssetManager": {
+                "$path": "src",
+                "Packages": {
+                    "$path": "Packages"
+                }
+            }
+        }
+    }
+}
