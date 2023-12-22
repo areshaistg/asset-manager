@@ -3,6 +3,7 @@ local Packages = Root.Packages
 local React = require(Packages.React)
 
 local SoundPreview = require(Root.Components.SoundPreview)
+local AnimationPreview = require(Root.Components.AnimationPreview)
 local BAR_HEIGHT = 40
 
 local function BarButton(props)
@@ -176,6 +177,10 @@ local function PreviewPane(props)
                 MoveSound = props.MoveSound,
                 ToggleSound = props.ToggleSound,
             }))
+        elseif props.PreviewElement:IsA("Animation") then
+            table.insert(children, React.createElement(AnimationPreview, {
+                Animation = props.PreviewElement,
+            }))
         end
     end
 
@@ -187,7 +192,6 @@ local function PreviewPane(props)
         BackgroundColor3 = Color3.fromHex("#16161D"),
     }, children)
 end
-
 
 local function Explorer(props)
     local previewElement, setPreviewElement = React.useState(nil)
@@ -215,6 +219,8 @@ local function Explorer(props)
             SoundTime = props.SoundTime,
             MoveSound = props.MoveSound,
             ToggleSound = props.ToggleSound,
+            PlayAnimation = props.PlayAnimation,
+            StopAnimation = props.StopAnimation,
         }),
     })
 end

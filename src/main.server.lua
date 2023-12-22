@@ -1,4 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Selection = game:GetService("Selection")
 local RunService = game:GetService("RunService")
 
 local Root = script.Parent
@@ -23,6 +24,20 @@ mainWidget.Title = "Asset Manager"
 
 local Explorer = require(Root.Components.Explorer)
 
+local KeyframesCache = {}
+local function GetKeyframes(animation)
+    local assetId = animation.AnimationId:match("%d+")
+    if not assetId then return Option.None end
+
+    if KeyframesCache[assetId] then
+        return Option.Wrap(KeyframesCache[assetId])
+    end
+    local model = InsertService:LoadAsset(tonumber(assetId))
+    local keyframes = model:GetChildren()[1]
+    KeyframesCache[assetId] = keyframes
+    return Option.Wrap(keyframes)
+end
+
 local function App(props)
     if props.Error then
         warn(props.Error)
@@ -32,6 +47,24 @@ local function App(props)
     local sound, setSound = React.useState()
     local soundClone, setSoundClone = React.useState()
     local soundTime, setSoundTime = React.useState(0)
+    local animationPreview, setAnimationPreview = React.useState()
+
+    React.useEffect(function()
+        if animationPreview then
+            local selected = Selected:Get()[1]
+            if not selected:IsA("Model") then return end
+            -- TODO: Look for a child humanoid/animationcontroller
+            local keyframes = GetKeyframes(animationPreview):Unwrap()
+            local frames = {}
+            for _, child in keyframes:GetChildren() do
+                child.
+            end
+            local t = 0
+            while animationPreview do
+                task.wait()
+            end
+        end
+    end, {animationPreview})
 
     React.useEffect(function()
         task.spawn(function()
@@ -107,6 +140,9 @@ local function App(props)
                     setSound(newSound)
                 end
             end
+
+            -- Animation Player
+            PlayAnimation = 
         })
     })
 end

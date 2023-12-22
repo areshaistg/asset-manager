@@ -3,7 +3,6 @@ local Packages = Root.Packages
 local React = require(Packages.React)
 
 local function Playback(props)
-
     return React.createElement("Frame", {
         Size = UDim2.new(1, -20, 0, 40),
         BackgroundTransparency = 1,
